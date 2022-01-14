@@ -9,6 +9,13 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+        <link rel="shortcut icon" href="{{ url_for('static', filename='/images/favicon.ico') }}" type="image/x-icon">
+        <link rel="icon" href="{{ url_for('static', filename='/images/favicon.ico') }}" type="image/x-icon">
+        <meta property="og:title" content="스위터 - 세상을 달달하게"/>
+        <meta property="og:description" content="mini project for Web Plus"/>
+        <meta property="og:image" content="{{ url_for('static', filename='/images/ogimg.png') }}"/>
+
+
         <!-- Bulma CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
         <!-- Font Awesome CSS -->
@@ -22,7 +29,11 @@
 
         <script src="{{ url_for('static', filename='/js/myjs.js') }}"></script>
 
-
+        <script>
+            $(document).ready(function () {
+                get_posts()
+            });
+        </script>
 
 
 

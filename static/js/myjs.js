@@ -1,12 +1,12 @@
-$(document).ready(function () {
-    get_posts()
-});
+
 
 function toggle_like(post_id, type) {
     console.log(post_id, type)
-    let $a_like = $(`#${post_id} a[aria-label='heart']`)
+    let $a_like = $(`#${post_id} a[aria-label='${type}']`)
     let $i_like = $a_like.find("i")
-    if ($i_like.hasClass("fa-heart")) {
+    let class_s = {"heart": "fa-heart", "star": "fa-star", "like": "fa-thumbs-up"}
+    let class_o = {"heart": "fa-heart-o", "star": "fa-star-o", "like": "fa-thumbs-o-up"}
+    if ($i_like.hasClass(class_s[type])) {
         $.ajax({
             type: "POST",
             url: "/update_like",
@@ -17,7 +17,7 @@ function toggle_like(post_id, type) {
             },
             success: function (response) {
                 console.log("unlike")
-                $i_like.addClass("fa-heart-o").removeClass("fa-heart")
+                $i_like.addClass(class_o[type]).removeClass(class_s[type])
                 $a_like.find("span.like-num").text(num2str(response["count"]))
             }
         })
@@ -32,7 +32,7 @@ function toggle_like(post_id, type) {
             },
             success: function (response) {
                 console.log("like")
-                $i_like.addClass("fa-heart").removeClass("fa-heart-o")
+                $i_like.addClass(class_s[type]).removeClass(class_o[type])
                 $a_like.find("span.like-num").text(num2str(response["count"]))
             }
         })
@@ -57,11 +57,15 @@ function post() {
     })
 }
 
-function get_posts() {
+function get_posts(username) {
+    if (username == undefined) {
+        username = ""
+    }
+
     $("#post-box").empty()
     $.ajax({
         type: "GET",
-        url: "/get_posts",
+        url: `/get_posts?username_give=${username}`,
         data: {},
         success: function (response) {
             if (response["result"] == "success") {
@@ -72,6 +76,9 @@ function get_posts() {
                     let time_before = time2str(time_post)
 
                     let class_heart = post['heart_by_me'] ? "fa-heart" : "fa-heart-o";
+                    let class_star = post['star_by_me'] ? "fa-star": "fa-star-o"
+                    let class_like = post['like_by_me'] ? "fa-thumbs-up" : "fa-thumbs-o-up"
+
                     let count_heart = post['count_heart'];
 
 
@@ -96,6 +103,14 @@ function get_posts() {
                                                         <a class="level-item is-sparta" aria-label="heart" onclick="toggle_like('${post['_id']}', 'heart')">
                                                             <span class="icon is-small"><i class="fa ${class_heart}"
                                                                                            aria-hidden="true"></i></span>&nbsp;<span class="like-num">${num2str(count_heart)}</span>
+                                                        </a>
+                                                        <a class="level-item is-sparta" aria-label="star" onclick="toggle_like('${post['_id']}', 'star')">
+                                                            <span class="icon is-small"><i class="fa ${class_star}"
+                                                                                           aria-hidden="true"></i></span>&nbsp;<span class="like-num">${num2str(post["count_star"])}</span>
+                                                        </a>
+                                                        <a class="level-item is-sparta" aria-label="like" onclick="toggle_like('${post['_id']}', 'like')">
+                                                            <span class="icon is-small"><i class="fa ${class_like}"
+                                                                                           aria-hidden="true"></i></span>&nbsp;<span class="like-num">${num2str(post["count_like"])}</span>
                                                         </a>
                                                     </div>
 
